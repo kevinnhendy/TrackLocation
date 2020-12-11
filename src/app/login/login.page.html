@@ -1,9 +1,36 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
-
+<ion-content fullscreen="true" color="background">
+  <ion-item-group id="container">
+    <ion-img src='assets/homePage/plane.svg' class="planeImg"></ion-img>
+    <ion-title color="primary">
+      <strong>Yuk</strong>
+      <p><strong>Login sekarang juga!</strong></p>
+    </ion-title>
+    <form [formGroup]="form">
+      <mat-label>Email</mat-label>
+      <mat-form-field appearance="standard">
+        <input matInput formControlName="email">
+        <mat-error *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors">
+          <span *ngIf="form.get('email').errors?.required">Email is required</span>
+          <span *ngIf="form.get('email').errors?.email">Email is invalid</span>
+        </mat-error>
+      </mat-form-field>
+      <mat-label>Password</mat-label>
+      <mat-form-field appearance="standard">
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+        <mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          {{hide ? 'visibility_off' : 'visibility'}}
+        </mat-icon>ion
+        <mat-error *ngIf="(form.get('password').dirty || form.get('password').touched) && form.get('password').errors">
+          <span *ngIf="form.get('password').errors?.required">Password is required</span>
+          <span *ngIf="form.get('password').errors?.minlength">Password needs to be 6 characters</span>
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <p routerLink="/reset-password" expand="full" color="secondary" shape="round" class="reset-password">Lupa password?</p>
+    <ion-button (click)="login()" expand="full" color="primary" shape="round" [disabled]="!form.valid">Login</ion-button>
+    <p style="text-align: center; color: red">
+      Tidak memiliki akun? Register
+      <span routerLink="/register" class="register">disini</span>
+    </p>
+  </ion-item-group>
 </ion-content>

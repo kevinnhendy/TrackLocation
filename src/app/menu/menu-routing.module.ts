@@ -6,20 +6,27 @@ import { MenuPage } from './menu.page';
 const routes: Routes = [
   {
     path: '',
-    component: MenuPage
+    redirectTo: '/menu/tabs/maps',
+    pathMatch: 'full'
   },
   {
-    path: 'maps',
-    loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
+    path: 'tabs',
+    component: MenuPage,
+    children: [
+      {
+        path: 'maps',
+        loadChildren: () => import('./maps/maps.module').then( m => m.MapsPageModule)
+      },
+      {
+        path: 'friendlist',
+        loadChildren: () => import('./friendlist/friendlist.module').then( m => m.FriendlistPageModule)
+      },
+      {
+        path: 'profile',
+        loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+      }
+    ],
   },
-  {
-    path: 'friendlist',
-    loadChildren: () => import('./friendlist/friendlist.module').then( m => m.FriendlistPageModule)
-  },
-  {
-    path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
-  }
 ];
 
 @NgModule({
