@@ -1,9 +1,26 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>friendlist</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Friendlist</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button slot="end" routerLink="./addfriend"><ion-icon name="add"></ion-icon></ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-searchbar #searchbar="ngModel" ngModel class="ion-padding" (ionInput)="searchWisata($event)" showCancelButton="focus"></ion-searchbar>
+  <p class="ion-text-center" *ngIf="wisataFilter?.length === 0 && wisataList.length !== 0">Pencarian tidak ditemukan</p>
+  <p class="ion-text-center" *ngIf="!wisataList || wisataList.length === 0">Tidak ada teman yang terdaftar</p>
+  <ion-card>
+    <ion-list>
+      <ion-item button lines="none" class="ion-margin ion-no-padding" *ngFor="let wisata of (wisataFilter)" (press)="deleteAlert(wisata)">
+        <ion-thumbnail slot="start" class="ion-no-margin ion-margin-end" style="height: 13vh; width: 13vh">
+          <ion-img [src]="(wisata.photo | async)" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;"></ion-img>
+        </ion-thumbnail>
+        <ion-label class="ion-no-margin">
+          <p class="ion-no-margin" style="font-weight: bold; text-transform: uppercase;">{{ wisata.name }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>
