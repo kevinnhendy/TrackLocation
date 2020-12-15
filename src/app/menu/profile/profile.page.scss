@@ -1,0 +1,123 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+ion-content{
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-card{
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.card-header{
+  background: #2c3a47;
+  padding: 60px 40px;
+}
+
+.pic{
+  display: inline-block;
+  padding: 8px;
+  background: linear-gradient(130deg, #e66767, #ffffff);
+  margin: auto;
+  border-radius: 50%;
+  background-size: 200% 200%;
+  animation: animated-gradient 2s linear infinite;
+}
+
+@keyframes animated-gradient{
+  25%{
+    background-position: left bottom;
+  }
+  50%{
+    background-position: right bottom;
+  }
+  75%{
+    background-position: right top;
+  }
+  100%{
+    background-position: left top;
+  }
+}
+
+.pic img{
+  display: block;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+}
+
+.name{
+  color: #f2f2f2;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 20px 0px 10px 0px;
+}
+
+.desc{
+  font-size: 18px;
+  color: #e66767;
+}
+
+.contact-btn{
+  display: inline-block;
+  padding: 12px 50px;
+  color: #e66767;
+  border: 2px solid #e66767;
+  border-radius: 6px;
+  margin-top: 16px;
+  transition: .3s linear;
+}
+
+.contact-btn:hover{
+  background: #e66767;
+  color: #f2f2f2;
+}
+
+.card-footer{
+  background: #f4f4f4;
+  padding: 60px 10px;
+}
+
+.border{
+  width: 1px;
+  height: 30px;
+  background: #bbb;
+}
+
+ion-button {
+  position: absolute;
+  left: 53%;
+  top: 20%;
+  z-index: 1;
+  float: right;
+}
+
+.btnImage{
+  width: 60px;
+  height: 60px;
+  --border-radius: 50%;
+}
+
+ion-icon {
+  font-size: 70px;
+  display: block;
+}
+
+@media (min-width: 500px) {
+  .profile-card {
+    width: 400px;
+  }
+}
+
