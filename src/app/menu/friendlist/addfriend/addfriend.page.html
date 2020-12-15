@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title>Addfriend</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar #searchbar="ngModel" ngModel placeholder="Yuk cari teman-temanmu!" class="ion-padding" (ionInput)="searchWisata($event)" showCancelButton="focus"></ion-searchbar>
+  <p class="ion-text-center" *ngIf="friendData?.length === 0">Pencarian tidak ditemukan</p>
+  <ion-card  *ngFor="let friend of (friendData)">
+    <ion-list>
+      <ion-item button lines="none" class="ion-margin ion-no-padding">
+        <ion-thumbnail slot="start" class="ion-no-margin ion-margin-end" style="height: 13vh; width: 13vh">
+          <ion-img [src]="(friend.photoUrl | async)" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;"></ion-img>
+        </ion-thumbnail>
+        <ion-label class="ion-no-margin">
+          <p class="ion-no-margin" style="font-weight: bold; text-transform: uppercase;">{{ friend.name }}</p>
+        </ion-label>
+        <ion-button *ngIf="friendData?.length !== 0 && !friendAdded" (click)="addFriend()">Add Friend</ion-button>
+        <ion-label class="ion-no-margin" *ngIf="friendData?.length !== 0 && friendAdded">
+          <p class="ion-no-margin">Already friend</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+
+</ion-content>
