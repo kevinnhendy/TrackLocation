@@ -1,36 +1,139 @@
-<ion-content fullscreen="true" color="background">
-  <ion-item-group id="container">
-    <ion-img src='assets/homePage/plane.svg' class="planeImg"></ion-img>
-    <ion-title color="primary">
-      <strong>Yuk</strong>
-      <p><strong>Login sekarang juga!</strong></p>
-    </ion-title>
-    <form [formGroup]="form">
-      <mat-label>Email</mat-label>
-      <mat-form-field appearance="standard">
-        <input matInput formControlName="email">
-        <mat-error *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors">
-          <span *ngIf="form.get('email').errors?.required">Email is required</span>
-          <span *ngIf="form.get('email').errors?.email">Email is invalid</span>
-        </mat-error>
-      </mat-form-field>
-      <mat-label>Password</mat-label>
-      <mat-form-field appearance="standard">
-        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
-        <mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-          {{hide ? 'visibility_off' : 'visibility'}}
-        </mat-icon>ion
-        <mat-error *ngIf="(form.get('password').dirty || form.get('password').touched) && form.get('password').errors">
-          <span *ngIf="form.get('password').errors?.required">Password is required</span>
-          <span *ngIf="form.get('password').errors?.minlength">Password needs to be 6 characters</span>
-        </mat-error>
-      </mat-form-field>
-    </form>
-    <p routerLink="/reset-password" expand="full" color="secondary" shape="round" class="reset-password">Lupa password?</p>
-    <ion-button (click)="login()" expand="full" color="primary" shape="round" [disabled]="!form.valid">Login</ion-button>
-    <p style="text-align: center; color: red">
-      Tidak memiliki akun? Register
-      <span routerLink="/register" class="register">disini</span>
-    </p>
-  </ion-item-group>
+<ion-content>
+  <div id="container" class="container">
+    <div class="row">
+      <!-- SIGN UP -->
+      <div class="col align-items-center flex-col sign-up">
+        <div class="form-wrapper align-items-center">
+          <form [formGroup]="formSignUp" class="form sign-up">
+            <mat-form-field appearance="outline">
+              <mat-label>First name</mat-label>
+              <input matInput formControlName="firstname">
+              <mat-error *ngIf="(formSignUp.get('firstname').dirty || formSignUp.get('firstname').touched) && formSignUp.get('firstname').errors">
+                <span *ngIf="formSignUp.get('firstname').errors.required">First name is required</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Last name</mat-label>
+              <input matInput formControlName="lastname">
+              <mat-error *ngIf="(formSignUp.get('lastname').dirty || formSignUp.get('lastname').touched) && formSignUp.get('lastname').errors">
+                <span *ngIf="formSignUp.get('lastname').errors.required">Last name is required</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+              <mat-error *ngIf="(formSignUp.get('email').dirty || formSignUp.get('email').touched) && formSignUp.get('email').errors">
+                <span *ngIf="formSignUp.get('email').errors.required">Email is required</span>
+                <span *ngIf="formSignUp.get('email').errors.email">Email is invalid</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="passwordHide ? 'password' : 'text'" formControlName="password">
+              <mat-icon matSuffix (click)="passwordHide = !passwordHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
+                {{passwordHide ? 'visibility_off' : 'visibility'}}
+              </mat-icon>
+              <mat-error *ngIf="(formSignUp.get('password').dirty || formSignUp.get('password').touched) && formSignUp.get('password').errors">
+                <span *ngIf="formSignUp.get('password').errors.required">Password is required</span>
+                <span *ngIf="formSignUp.get('password').errors.minlength">Password needs to be 6 characters</span>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm Password</mat-label>
+              <input matInput [type]="confirmHide ? 'password' : 'text'" formControlName="confirm">
+              <mat-icon matSuffix (click)="confirmHide = !confirmHide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="confirmHide">
+                {{confirmHide ? 'visibility_off' : 'visibility'}}
+              </mat-icon>
+              <mat-error *ngIf="(formSignUp.get('confirm').dirty || formSignUp.get('confirm').touched) && formSignUp.get('confirm').errors">
+                <span *ngIf="formSignUp.get('confirm').errors.required">Confirm Password is required</span>
+                <span *ngIf="formSignUp.get('confirm').errors.mustMatch">Password and Confirm Password didn't match</span>
+              </mat-error>
+            </mat-form-field>
+            <ion-button (click)="register()" expand="full" color="primary" shape="round" [disabled]="!formSignUp.valid">Daftar</ion-button>
+            <p>
+              <span>Already have an account?</span>
+              <ion-label (click)="toggle()" class="pointer">Sign in here</ion-label>
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <!-- SIGN IN -->
+      <div class="col align-items-center flex-col sign-in">
+        <div class="form-wrapper align-items-center">
+          <form [formGroup]="form" class="form sign-in ion-text-left">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email">
+              <mat-error *ngIf="(form.get('email').dirty || form.get('email').touched) && form.get('email').errors">
+                <span *ngIf="form.get('email').errors?.required">Email is required</span>
+                <span *ngIf="form.get('email').errors?.email">Email is invalid</span>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+              <mat-icon matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                {{hide ? 'visibility_off' : 'visibility'}}
+              </mat-icon>
+              <mat-error *ngIf="(form.get('password').dirty || form.get('password').touched) && form.get('password').errors">
+                <span *ngIf="form.get('password').errors?.required">Password is required</span>
+                <span *ngIf="form.get('password').errors?.minlength">Password needs to be 6 characters</span>
+              </mat-error>
+            </mat-form-field>
+            <ion-button (click)="login()" expand="full" color="primary" shape="round" [disabled]="!form.valid">Login</ion-button>
+            <p>
+              <span>Don't have an account?</span>
+              <ion-label (click)="toggle()" class="pointer">Sign up here</ion-label>
+            </p>
+          </form>
+
+        </div>
+      </div>
+      <!-- END SIGN IN -->
+    </div>
+
+    <!-- CONTENT SECTION -->
+    <div class="row content-row">
+      <!-- SIGN IN CONTENT -->
+      <div class="col align-items-center flex-col">
+        <div class="text sign-in">
+          <h2>
+            Welcome back
+          </h2>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit obcaecati, accusantium
+            molestias, laborum, aspernatur deserunt officia voluptatum tempora dicta quo ab ullam. Assumenda
+            enim harum minima possimus dignissimos deserunt rem.
+          </p>
+        </div>
+        <div class="img sign-in">
+          <img src="./assets/icon/undraw_different_love_a3rg.svg" alt="welcome">
+        </div>
+      </div>
+
+      <!-- SIGN UP CONTENT -->
+      <div class="col align-items-center flex-col">
+        <div class="img sign-up">
+          <img src="./assets/icon/undraw_creative_team_r90h.svg" alt="welcome">
+        </div>
+        <div class="text sign-up">
+          <h2>
+            Join with us
+          </h2>
+          <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit obcaecati, accusantium
+            molestias, laborum, aspernatur deserunt officia voluptatum tempora dicta quo ab ullam. Assumenda
+            enim harum minima possimus dignissimos deserunt rem.
+          </p>
+        </div>
+      </div>
+      <!-- END SIGN UP CONTENT -->
+    </div>
+    <!-- END CONTENT SECTION -->
+  </div>
 </ion-content>
