@@ -1,0 +1,22 @@
+#map {
+  height: 100%;
+}
+
+ion-button {
+  position: absolute;
+  bottom: 3%;
+  left: 3%;
+}
+
+ion-item{
+  background: #fff;
+  bottom: 2%;
+  left: 3%;
+  position: absolute;
+  border-radius: 8px;
+  box-sizing: border-box;
+  width: 80%;
+  border-bottom: 1px solid transparent;
+  transition-property: background,box-shadow;
+  transition-duration: 0.3s;
+}
