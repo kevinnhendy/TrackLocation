@@ -98,4 +98,35 @@ export class AuthService {
   async deleteFriend(friendId) {
     return this.userFireStore.collection('friendlist').doc(friendId).delete();
   }
+
+  getUserLocationList(): Observable<any> {
+    // const ok = this.userFireStore.collection(`locations/${ this.currentUser.uid }/track`,
+    //     ref => ref.orderBy('timestamp')).valueChanges().subscribe();
+    // console.log('Data: ', ok);
+    return this.userFireStore.collection(`locations/${ this.currentUser.uid }/track`,
+        ref => ref.orderBy('timestamp')).valueChanges();
+  }
+
+  async addUserLocation(location) {
+    console.log('ALocation: ', location);
+    const id = this.userFireStore.createId();
+
+    this.userFireStore.collection('friendlist').get().toPromise().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        if (doc.data().uid === this.currentUser.uid) {
+          this.userFireStore.doc(`friendlist/${ doc.id }`, ref => ref.where('uid', '==', this.currentUser.uid)).update({
+            location,
+          });
+        }
+      });
+    });
+
+    this.userFireStore.doc(`users/${this.currentUser.uid}`).update({
+      location,
+    });
+
+    return await this.userFireStore.doc(`locations/${ this.currentUser.uid }/track/${ id }`).set({
+      location,
+    });
+  }
 }
