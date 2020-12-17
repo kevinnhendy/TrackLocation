@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {map} from 'rxjs/operators';
-import {AngularFireStorage} from '@angular/fire/storage';
-import {Router} from '@angular/router';
 import {AuthService} from '../../auth.service';
-import {AlertController} from '@ionic/angular';
+import {AlertController, LoadingController, ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-friendlist',
@@ -11,65 +9,81 @@ import {AlertController} from '@ionic/angular';
   styleUrls: ['./friendlist.page.scss'],
 })
 export class FriendlistPage implements OnInit {
-  public wisataList: any[];
-  public wisataFilter: any[];
+  public friendList: any[];
+  public friendFilter: any[];
 
   constructor(
       private authService: AuthService,
       private alertController: AlertController,
+      private loadingController: LoadingController,
+      private toastController: ToastController,
     ) { }
 
   ngOnInit() {
   }
 
   ionViewWillEnter() {
-    this.getWisataList();
+    this.getFriendList();
   }
 
-  getWisataList(order = null) {
+  async getFriendList(order = null) {
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Loading friend data...',
+    });
+    await loading.present();
+
     this.authService.getFriendList().pipe(
-        map(async wisataList => {
-          wisataList.map(wisata => {
-            wisata.photo = this.authService.getUserPhotoUrl(wisata.photo);
-            return wisata;
+        map(async friendList => {
+          friendList.map(friend => {
+            friend.photo = this.authService.getUserPhotoUrl(friend.photo);
+            return friend;
           });
 
-          wisataList.sort((wisataA, wisataB) => {
-            return wisataA.name - wisataB.name;
+          friendList.sort((friendA, friendB) => {
+            return friendA.name - friendB.name;
           });
 
-          return wisataList;
+          return friendList;
         })
-    ).subscribe(async wisataList => {
-      this.wisataList = await wisataList;
-      this.wisataFilter = await wisataList;
+    ).subscribe(async friendList => {
+      this.friendList = await friendList;
+      this.friendFilter = await friendList;
+      loading.dismiss();
     });
   }
 
-  async searchWisata($event) {
+  async searchFriend($event) {
     const searchTerm = $event.srcElement.value;
     if (!searchTerm) {
-      this.wisataFilter = this.wisataList;
+      this.friendFilter = this.friendList;
       return;
     }
-    this.wisataFilter = this.wisataList.filter(wisata => {
-      if (wisata.name && searchTerm) {
-        return (wisata.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1);
+    this.friendFilter = this.friendList.filter(friend => {
+      if (friend.name && searchTerm) {
+        return (friend.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1);
       }
     });
   }
 
-
   async deleteAlert(friend) {
+    const toast = await this.toastController.create({
+      message: 'Friend deleted successfully!',
+      duration: 2000,
+      color: 'success',
+    });
+
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'Menghapus pertemanan',
-      subHeader: 'Yakin ingin menghapus pertemanan dengan ' + friend.name + '?',
+      header: 'Delete friend',
+      subHeader: 'Are you sure you want to unfriend ' + friend.name + '?',
       buttons: [
         {
           text: 'Ok',
           handler: data => {
-            this.authService.deleteFriend(friend.friendid);
+            this.authService.deleteFriend(friend.friendid).then(() => {
+              toast.present();
+            });
           }
         }, {
           text: 'Cancel',
