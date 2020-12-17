@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../../auth.service';
 import {map} from 'rxjs/operators';
-import {ToastController} from '@ionic/angular';
+import {LoadingController, ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-addfriend',
@@ -17,6 +17,7 @@ export class AddfriendPage implements OnInit {
   constructor(
       private authService: AuthService,
       private toastController: ToastController,
+      private loadingController: LoadingController,
   ) { }
 
   ngOnInit() {
@@ -41,7 +42,7 @@ export class AddfriendPage implements OnInit {
     });
   }
 
-  async searchWisata($event) {
+  async searchFriend($event) {
     const searchTerm = $event.srcElement.value.trim();
     if (searchTerm) {
       this.authService.getUserData(searchTerm).pipe(
@@ -70,17 +71,32 @@ export class AddfriendPage implements OnInit {
   }
 
   async addFriend() {
+    const toast = await this.toastController.create({
+      message: 'Friend added successfully!',
+      duration: 2000,
+      color: 'success',
+    });
+
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Please wait...',
+    });
+
     if (this.friendData[0].uid === this.authService.currentUser.uid) {
-      const toast = await this.toastController.create({
-        message: 'Maaf anda tidak dapat menambahkan diri sendiri :(',
+      const failedToast = await this.toastController.create({
+        message: 'Sorry you can\'t add yourself :(',
         duration: 2000,
         color: 'danger',
       });
-      toast.present();
+      failedToast.present();
     } else {
-      console.log('beda');
+      loading.present();
+
       this.friendAdded = !this.friendAdded;
-      this.authService.addFriend(this.friendData);
+      this.authService.addFriend(this.friendData).then(() => {
+        loading.dismiss();
+        toast.present();
+      });
     }
   }
 }

@@ -1,0 +1,22 @@
+div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 10%;
+}
+
+ion-label {
+  padding: 0 !important;
+  font-size: 20px !important;
+}
+
+ion-avatar {
+  width: 140px;
+  height: 140px;
+}
+
+p {
+  margin-top: 0;
+  color: #989797;
+}
