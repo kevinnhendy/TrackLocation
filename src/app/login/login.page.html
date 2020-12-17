@@ -1,7 +1,6 @@
 <ion-content>
   <div id="container" class="container">
     <div class="row">
-      <!-- SIGN UP -->
       <div class="col align-items-center flex-col sign-up">
         <div class="form-wrapper align-items-center">
           <form [formGroup]="formSignUp" class="form sign-up">
@@ -55,14 +54,13 @@
             </mat-form-field>
             <ion-button (click)="register()" expand="full" color="primary" shape="round" [disabled]="!formSignUp.valid">Daftar</ion-button>
             <p>
-              <span>Already have an account?</span>
-              <ion-label (click)="toggle()" class="pointer">Sign in here</ion-label>
+              <span>Already have an account? </span>
+              <ion-label (click)="toggle()" class="pointer" style="color: red">Sign in here</ion-label>
             </p>
           </form>
         </div>
       </div>
 
-      <!-- SIGN IN -->
       <div class="col align-items-center flex-col sign-in">
         <div class="form-wrapper align-items-center">
           <form [formGroup]="form" class="form sign-in ion-text-left">
@@ -87,28 +85,23 @@
             </mat-form-field>
             <ion-button (click)="login()" expand="full" color="primary" shape="round" [disabled]="!form.valid">Login</ion-button>
             <p>
-              <span>Don't have an account?</span>
-              <ion-label (click)="toggle()" class="pointer">Sign up here</ion-label>
+              <span>Don't have an account? </span>
+              <ion-label (click)="toggle()" class="pointer" style="color: red;">Sign up here</ion-label>
             </p>
           </form>
-
         </div>
       </div>
-      <!-- END SIGN IN -->
     </div>
 
-    <!-- CONTENT SECTION -->
     <div class="row content-row">
       <!-- SIGN IN CONTENT -->
       <div class="col align-items-center flex-col">
         <div class="text sign-in">
           <h2>
-            Welcome back
+            Hello Locaters!
           </h2>
           <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit obcaecati, accusantium
-            molestias, laborum, aspernatur deserunt officia voluptatum tempora dicta quo ab ullam. Assumenda
-            enim harum minima possimus dignissimos deserunt rem.
+            Make it easier to find out the location of your friends, by using Track Location!
           </p>
         </div>
         <div class="img sign-in">
@@ -116,24 +109,11 @@
         </div>
       </div>
 
-      <!-- SIGN UP CONTENT -->
       <div class="col align-items-center flex-col">
         <div class="img sign-up">
           <img src="./assets/icon/undraw_creative_team_r90h.svg" alt="welcome">
         </div>
-        <div class="text sign-up">
-          <h2>
-            Join with us
-          </h2>
-          <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Impedit obcaecati, accusantium
-            molestias, laborum, aspernatur deserunt officia voluptatum tempora dicta quo ab ullam. Assumenda
-            enim harum minima possimus dignissimos deserunt rem.
-          </p>
-        </div>
       </div>
-      <!-- END SIGN UP CONTENT -->
     </div>
-    <!-- END CONTENT SECTION -->
   </div>
 </ion-content>

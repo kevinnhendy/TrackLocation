@@ -55,7 +55,10 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Please wait...',
+    });
     await loading.present();
 
     this.authService.login(this.form.value).then(user => {
@@ -73,13 +76,33 @@ export class LoginPage implements OnInit {
     });
   }
 
+  async getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position: Position) => {
+        const currentPos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          timestamp: position.timestamp,
+          title: 'Automated check-in',
+        };
+
+        this.authService.addUserLocation(currentPos, 'add');
+      });
+    }
+  }
+
   async register() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Please wait...',
+    });
     await loading.present();
 
     this.authService.register(this.formSignUp.value).then(user => {
-      loading.dismiss();
-      this.router.navigateByUrl('/menu/tabs/maps', { replaceUrl: true });
+      this.getCurrentLocation().then(() => {
+        loading.dismiss();
+        this.router.navigateByUrl('/menu/tabs/maps', { replaceUrl: true });
+      });
     }, async err => {
       loading.dismiss();
       const alert = await this.alertController.create({
