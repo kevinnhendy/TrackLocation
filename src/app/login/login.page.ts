@@ -67,7 +67,7 @@ export class LoginPage implements OnInit {
     }, async err => {
       loading.dismiss();
       const alert = await this.alertController.create({
-        header: 'Login akun gagal',
+        header: 'Login failed',
         message: err.message,
         buttons: ['OK'],
       });
@@ -106,7 +106,7 @@ export class LoginPage implements OnInit {
     }, async err => {
       loading.dismiss();
       const alert = await this.alertController.create({
-        header: 'Registrasi akun gagal',
+        header: 'Account registration failed',
         message: err.message,
         buttons: ['OK'],
       });
