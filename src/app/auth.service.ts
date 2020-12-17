@@ -74,6 +74,17 @@ export class AuthService {
     this.userFireStore.doc(`users/${this.currentUser.uid}`).update({
       photo: userEmail + '.png',
     });
+
+    this.userFireStore.collection('friendlist').get().toPromise().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const docData: any = doc.data();
+        if (docData.uid === this.currentUser.uid) {
+          this.userFireStore.doc(`friendlist/${ doc.id }`).update({
+            photo: userEmail + '.png',
+          });
+        }
+      });
+    });
   }
 
   getFriendList(): Observable<any[]> {
