@@ -90,6 +90,7 @@ export class AuthService {
       email: user[0].email,
       name: user[0].name,
       photo: user[0].photo,
+      location: user[0].location,
       friendof: this.currentUser.uid,
       friendid: id,
     });
@@ -100,33 +101,37 @@ export class AuthService {
   }
 
   getUserLocationList(): Observable<any> {
-    // const ok = this.userFireStore.collection(`locations/${ this.currentUser.uid }/track`,
-    //     ref => ref.orderBy('timestamp')).valueChanges().subscribe();
-    // console.log('Data: ', ok);
     return this.userFireStore.collection(`locations/${ this.currentUser.uid }/track`,
-        ref => ref.orderBy('timestamp')).valueChanges();
+        ref => ref.orderBy('location.timestamp', 'desc')).valueChanges();
   }
 
-  async addUserLocation(location) {
-    console.log('ALocation: ', location);
+  async addUserLocation(location, mode) {
     const id = this.userFireStore.createId();
+
+    if (mode === 'add') {
+      this.userFireStore.doc(`locations/${ this.currentUser.uid }/track/${ id }`).set({
+        location,
+        uid: id,
+      });
+    }
 
     this.userFireStore.collection('friendlist').get().toPromise().then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        if (doc.data().uid === this.currentUser.uid) {
-          this.userFireStore.doc(`friendlist/${ doc.id }`, ref => ref.where('uid', '==', this.currentUser.uid)).update({
+        const docData: any = doc.data();
+        if (docData.uid === this.currentUser.uid) {
+          this.userFireStore.doc(`friendlist/${ doc.id }`).update({
             location,
           });
         }
       });
     });
 
-    this.userFireStore.doc(`users/${this.currentUser.uid}`).update({
+    return await this.userFireStore.doc(`users/${this.currentUser.uid}`).update({
       location,
     });
+  }
 
-    return await this.userFireStore.doc(`locations/${ this.currentUser.uid }/track/${ id }`).set({
-      location,
-    });
+  async deleteLocation(locationId) {
+    return this.userFireStore.collection(`locations/${ this.currentUser.uid }/track`).doc(locationId).delete();
   }
 }

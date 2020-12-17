@@ -43,13 +43,17 @@ export class MapsPage implements OnInit {
     });
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Updating location...',
+    });
+    await loading.present();
+
     this.authService.getUserData(null).subscribe(res => {
       this.userData = res;
       this.authService.getFriendList().subscribe(ref => {
         this.friendData = ref;
-        console.log('userData: ', this.userData);
-        console.log('friendData: ', this.friendData);
 
         let iterator = 0;
         let colorIterator = 0;
@@ -77,8 +81,9 @@ export class MapsPage implements OnInit {
           'red',
         ];
 
-        console.log('Location List: ', this.locationList);
-        this.showMap(this.currentPos);
+        this.showMap(this.currentPos).then(() => {
+          loading.dismiss();
+        });
       });
     });
 
@@ -108,7 +113,7 @@ export class MapsPage implements OnInit {
   }
 
 
-  showMap(pos: any) {
+  async showMap(pos: any) {
     const location = new google.maps.LatLng(pos.lat, pos.lng);
 
     const options = {
@@ -129,8 +134,6 @@ export class MapsPage implements OnInit {
 
     const url = 'http://maps.google.com/mapfiles/ms/icons/';
 
-    console.log('showMap - friendData Length: ', this.friendData);
-
     if (this.locationList.length > 0) {
       for (iterator = 0; iterator < locations.length; iterator++) {
         this.marker = new google.maps.Marker({
@@ -140,8 +143,6 @@ export class MapsPage implements OnInit {
             url: url + locations[iterator][4] + '-dot.png',
           }
         });
-
-        console.log('Marker made: ', this.marker);
 
         google.maps.event.addListener(this.marker, 'click', ((marker, iterator) => {
           return function() {
@@ -159,18 +160,14 @@ export class MapsPage implements OnInit {
       this.marker.setPosition(mapsMouseEvent.latLng);
       this.currentPos = mapsMouseEvent.latLng.toJSON();
       this.currentPos.timestamp = currDate;
-
-      // console.log('Pinned String: ', JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2));
-      // console.log('Pinned JSON: ', mapsMouseEvent.latLng.toJSON());
-      // console.log('Current Pos: ', this.currentPos);
-      // const o = new Date(currDate).toLocaleDateString('en-US');
-      // const p = new Date(currDate).toLocaleTimeString('en-US');
-      // console.log('CurrDate to Date: ', o,' ',p);
     });
   }
 
   async saveLocation() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Saving new location...',
+    });
     await loading.present();
 
     if (this.form.value.title === '') {
@@ -179,9 +176,11 @@ export class MapsPage implements OnInit {
       this.currentPos.title = this.form.value.title;
     }
 
-    console.log('Current Position: ', this.currentPos); 
+    this.form.setValue({
+      title: ''
+    });
 
-    this.authService.addUserLocation(this.currentPos).then(() => {
+    this.authService.addUserLocation(this.currentPos, 'add').then(() => {
       loading.dismiss();
     });
 
