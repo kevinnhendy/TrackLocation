@@ -1,0 +1,18 @@
+.profile-card{
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  margin: auto;
+  overflow: hidden;
+}
+
+.imp-card {
+  background: #f4f4f4;
+  padding: 60px 10px;
+}
+
+@media (min-width: 500px) {
+  .profile-card {
+    width: 500px;
+  }
+}

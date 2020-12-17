@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../auth.service';
-import {AlertController, LoadingController} from '@ionic/angular';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AlertController, LoadingController, PopoverController, ToastController} from '@ionic/angular';
 import {Plugins, CameraResultType} from '@capacitor/core';
 import {Router} from '@angular/router';
+import {PopoverComponent} from './popover/popover.component';
 
 const { Camera } = Plugins;
 
@@ -14,6 +14,7 @@ const { Camera } = Plugins;
 })
 export class ProfilePage implements OnInit {
   userProfile: any;
+  userLocationList: any;
   photo: any = {
     userPhoto: '',
     oldPhoto: '',
@@ -25,6 +26,8 @@ export class ProfilePage implements OnInit {
       private authService: AuthService,
       private loadingController: LoadingController,
       private alertController: AlertController,
+      private toastController: ToastController,
+      private popoverController: PopoverController,
       private router: Router,
     ) { }
 
@@ -32,20 +35,37 @@ export class ProfilePage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    const loading = await this.loadingController.create();
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Loading your data...',
+    });
     await loading.present();
 
     this.authService.getUserData(null).subscribe(ref => {
       this.authService.getUserPhotoUrl(ref.photo).subscribe(res => {
-        loading.dismiss();
+        this.authService.getUserLocationList().subscribe(result => {
+          loading.dismiss();
 
-        this.userProfile = ref;
-        this.photo.userPhoto = res;
-        this.photo.oldPhoto = res;
-        this.photo.base64Photo = res;
-        this.photo.oldPhotoName = ref.photo;
+          this.userProfile = ref;
+          this.photo.userPhoto = res;
+          this.photo.oldPhoto = res;
+          this.photo.base64Photo = res;
+          this.photo.oldPhotoName = ref.photo;
+
+          this.userLocationList = result;
+        });
       });
     });
+  }
+
+  show(){
+    const modal = document.querySelector('.imagePreview');
+    modal.classList.add('show');
+  }
+
+  close(){
+    const modal = document.querySelector('.imagePreview');
+    modal.classList.remove('show');
   }
 
   async takePicture() {
@@ -58,7 +78,10 @@ export class ProfilePage implements OnInit {
       this.photo.base64Photo = profilePicture.base64String;
       this.photo.userPhoto = 'data:image/png;base64,' + this.photo.base64Photo;
 
-      const loading = await this.loadingController.create();
+      const loading = await this.loadingController.create({
+        cssClass: 'my-custom-class',
+        message: 'Please wait...',
+      });
       await loading.present();
 
       if (this.userProfile.photo !== this.photo.oldPhoto) {
@@ -71,17 +94,6 @@ export class ProfilePage implements OnInit {
       }
     } catch (error) {
     }
-  }
-
-  async deleteLocation() {
-    const alert = await this.alertController.create({
-      header: 'Sukses!',
-      message: 'Berhasil menghapus lokasi',
-      buttons: ['OK'],
-      backdropDismiss: false,
-    });
-
-    await alert.present();
   }
 
   async logout() {
@@ -98,25 +110,81 @@ export class ProfilePage implements OnInit {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Logout',
-      subHeader: 'Yahh... Yakin nih mau keluar?',
-      message: `<img src="https://www.clipartmax.com/png/middle/64-644307_sad-emoji-png-clipart-sad-emoji-png-clipart.png"></img>`,
+      subHeader: 'Are you sure want to logout?',
       buttons: [
         {
-          text: 'Gajadi deh, demi kamu...',
+          text: 'Ok',
+          handler: () => {
+            this.logout().then(() => {
+              this.router.navigateByUrl('/login', { replaceUrl: true });
+            });
+          }
+        }, {
+          text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Ntar pasti login lagi kok!',
-          handler: () => {
-            this.logout();
           }
         }
       ]
     });
 
     await alert.present();
+  }
+
+  async deleteAlert(locationData) {
+    const toast = await this.toastController.create({
+      message: 'Your location has been deleted successfully!',
+      duration: 2000,
+      color: 'success',
+    });
+
+    const loading = await this.loadingController.create({
+      cssClass: 'my-custom-class',
+      message: 'Please wait...',
+    });
+
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Deleting check-in history',
+      subHeader: 'Are you sure to delete this location: ' + locationData.location.title + '?',
+      buttons: [
+        {
+          text: 'Ok',
+          handler: data => {
+            loading.present();
+            this.authService.deleteLocation(locationData.uid).then(() => {
+              let location = null;
+
+              if (this.userLocationList.length === 0) {
+                location = locationData.location;
+              } else {
+                location = this.userLocationList[0].location;
+              }
+              this.authService.addUserLocation(location, 'update').then(() => {
+                loading.dismiss();
+                toast.present();
+              });
+            });
+          }
+        }, {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }
+      ],
+      backdropDismiss: false,
+    });
+
+    await alert.present();
+  }
+
+  async presentPopover() {
+    const popover = await this.popoverController.create({
+      component: PopoverComponent,
+      cssClass: 'my-custom-class',
+      translucent: true,
+    });
+    return await popover.present();
   }
 }

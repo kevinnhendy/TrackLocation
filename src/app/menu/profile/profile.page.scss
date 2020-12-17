@@ -5,6 +5,11 @@
   text-decoration: none;
 }
 
+h3 {
+  margin-bottom: 20px;
+  color: black;
+}
+
 ion-content{
   height: 100vh;
   background-size: cover;
@@ -24,6 +29,11 @@ ion-content{
 .card-header{
   background: #2c3a47;
   padding: 60px 40px;
+
+  ion-icon {
+    font-size: 70px;
+    display: block;
+  }
 }
 
 .pic{
@@ -90,6 +100,10 @@ ion-content{
   padding: 60px 10px;
 }
 
+ion-list{
+  background: #f4f4f4;
+}
+
 .border{
   width: 1px;
   height: 30px;
@@ -110,14 +124,77 @@ ion-button {
   --border-radius: 50%;
 }
 
-ion-icon {
-  font-size: 70px;
-  display: block;
-}
-
 @media (min-width: 500px) {
   .profile-card {
-    width: 400px;
+    width: 500px;
   }
+
+  ion-button {
+    left: 51%;
+    top: 17%;
+  }
+}
+
+.imagePreview{
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: -1;
+  opacity: 0;
+  transition: .5s;
+}
+
+.imagePreview img{
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.3);
+  max-width: 100%;
+  max-height: 100%;
+  transition: .5s;
+}
+
+.imagePreview.show{
+  opacity: 1;
+  z-index: 99;
+}
+
+.imagePreview.show img{
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.close{
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.close:hover{
+  opacity: .5;
+}
+
+.close:before, .close:after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  border-radius: 1.5px;
+  top: 50%;
+  left: 50%;
+  background-color: #fff;
+}
+
+.close:before{
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close:after{
+  transform: translate(-50%, -50%) rotate(135deg);
 }
 

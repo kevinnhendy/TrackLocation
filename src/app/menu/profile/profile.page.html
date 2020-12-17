@@ -1,46 +1,13 @@
-<!--<ion-header>-->
-<!--  <ion-toolbar color="primary">-->
-<!--    <ion-title class="ion-text-center">-->
-<!--      Wisea-->
-<!--    </ion-title>-->
-<!--  </ion-toolbar>-->
-<!--</ion-header>-->
+<ion-content [fullscreen]="true" color="secondary">
+  <div class="imagePreview">
+    <img src="{{ photo.userPhoto }}" alt="">
+    <div (click)="close()" class="close"></div>
+  </div>
 
-<!--<ion-content [fullscreen]="true" color="background">-->
-<!--  <ion-item-group id="container">-->
-<!--    <ion-item lines='none'>-->
-<!--      <ion-avatar class="proflePic">-->
-<!--        <ion-img src="{{ photo.userPhoto }}"></ion-img>-->
-<!--      </ion-avatar>-->
-<!--      <ion-button class="btnImage" (click)="takePicture()"><ion-icon name="camera"></ion-icon></ion-button>-->
-<!--    </ion-item>-->
-<!--    <ion-title size="large" class="ion-text-center userName">{{ userProfile?.username }}</ion-title>-->
-<!--    <ion-label style="padding-top: 30px">{{ userProfile?.name }}</ion-label>-->
-<!--    <ion-label class="ion-padding-top">00000019921</ion-label>-->
-<!--    <ion-item lines='none'>-->
-<!--      <ion-card>-->
-<!--        <ion-grid>-->
-<!--          <ion-row class="ion-align-items-center ion-text-center">-->
-<!--              <p>My latest location</p>-->
-<!--          </ion-row>-->
-
-<!--          <ion-list>-->
-<!--            <ion-item>-->
-<!--              <ion-label (press)="deleteLocation()">Item</ion-label>-->
-<!--            </ion-item>-->
-<!--          </ion-list>-->
-<!--        </ion-grid>-->
-<!--      </ion-card>-->
-<!--    </ion-item>-->
-<!--    <ion-button expand="block" shape="round" color="primary" style="margin-bottom: 80px" routerLink="/menu/tabs/profile/edit-profile">Edit Profile</ion-button>-->
-<!--  </ion-item-group>-->
-<!--</ion-content>-->
-
-<ion-content>
   <div class="profile-card">
     <div class="card-header">
       <div class="pic">
-        <img src="{{ photo.userPhoto }}" alt="">
+        <img (click)="show()" src="{{ photo.userPhoto }}" alt="">
       </div>
       <ion-button class="btnImage" (click)="takePicture()"><ion-icon name="camera"></ion-icon></ion-button>
       <div class="name">{{ userProfile?.name }}</div>
@@ -49,8 +16,22 @@
     </div>
     <div class="card-footer">
       <div>
-        <h3>My lastest Location</h3>
+        <h3>My latest Location</h3>
+        <p class="ion-text-center" *ngIf="!userLocationList || userLocationList.length === 0">Kamu belum pernah check-in nih!</p>
+        <ion-list>
+          <ion-item class="ion-padding" button *ngFor="let data of (userLocationList)" (press)="deleteAlert(data)">
+            <div>
+              <p class="ion-no-margin" style="color: grey">{{ data.location.timestamp | date:'short' }}</p>
+              <p class="ion-no-margin" color="primary">{{ data.location.title }}</p>
+            </div>
+          </ion-item>
+        </ion-list>
       </div>
     </div>
   </div>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button class="btnImage" (click)="presentPopover()">
+      <ion-icon name="mail-unread-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
